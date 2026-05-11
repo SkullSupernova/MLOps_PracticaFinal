@@ -9,7 +9,7 @@ env/
 *$py.class
 
 # Datos y modelos (evitar archivos pesados en el repositorio)
-data/
+#data/
 models/*.pth
 models/*.onnx
 models/*.h5
