@@ -1,0 +1,24 @@
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Caché de Python
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Datos y modelos (evitar archivos pesados en el repositorio)
+data/
+models/*.pth
+models/*.onnx
+models/*.h5
+
+# Herramientas de monitoreo y logs
+wandb/
+.pytest_cache/
+logs/
+
+# Archivos de configuración del IDE
+.vscode/
+.idea/
