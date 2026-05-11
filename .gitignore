@@ -20,5 +20,5 @@ wandb/
 logs/
 
 # Archivos de configuración del IDE
-.vscode/
+# .vscode/
 .idea/

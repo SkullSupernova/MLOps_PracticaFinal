@@ -1,0 +1,41 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "KMNIST: Entrenar",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/A13_MLOps/PracticaFinal/src/main.py",
+            "args": ["train"],
+            "cwd": "${workspaceFolder}/A13_MLOps/PracticaFinal",
+            "env": { "PYTHONPATH": "${workspaceFolder}/A13_MLOps/PracticaFinal" },
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "KMNIST: Evaluar",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/A13_MLOps/PracticaFinal/src/main.py",
+            "args": [
+                "evaluate",
+                "--checkpoint", "models/ResNet_Final_Combined.pth"
+            ],
+            "cwd": "${workspaceFolder}/A13_MLOps/PracticaFinal",
+            "env": { "PYTHONPATH": "${workspaceFolder}/A13_MLOps/PracticaFinal" },
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "KMNIST: OOD",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/A13_MLOps/PracticaFinal/src/main.py",
+            "args": [
+                "ood",
+                "--checkpoint", "models/ResNet_Final_Combined.pth"
+            ],
+            "cwd": "${workspaceFolder}/A13_MLOps/PracticaFinal",
+            "env": { "PYTHONPATH": "${workspaceFolder}/A13_MLOps/PracticaFinal" },
+            "console": "integratedTerminal"
+        }
+    ]
+}
