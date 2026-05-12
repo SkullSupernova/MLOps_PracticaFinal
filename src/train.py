@@ -45,8 +45,11 @@ from utils import (
 # =============================================================================
 # Constantes de configuración por defecto
 # =============================================================================
-DEFAULT_DATA_PATH       = os.path.join(BASE_DIR, 'data')
-DEFAULT_MODELS_DIR      = os.path.join(BASE_DIR, 'models')
+BASE_DIR    = os.path.abspath(os.path.dirname(__file__))          # .../src
+PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..'))      # .../MLOps_PracticaFinal
+
+DEFAULT_DATA_PATH       = os.path.join(PROJECT_ROOT, 'data')
+DEFAULT_MODELS_DIR      = os.path.join(PROJECT_ROOT, 'models')
 DEFAULT_CHECKPOINT_NAME = 'ResNet_Final_Combined.pth'
 DEFAULT_MAX_EPOCHS      = 200
 DEFAULT_LR              = 1e-3

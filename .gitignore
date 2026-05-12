@@ -22,3 +22,25 @@ logs/
 # Archivos de configuración del IDE
 # .vscode/
 .idea/
+
+
+# Logs
+logs/*.log
+logs/*.log.*
+
+# Datos y modelos locales
+data/
+src/data/
+
+# Artefactos de Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# W&B
+wandb/
+
+# Entornos virtuales
+.venv/
+venv/
