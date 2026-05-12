@@ -77,7 +77,8 @@ def get_project_root() -> Path:
         estricta, cuya compatibilidad y correcto funcionamiento en entornos de producción 
         arbitrarios se considera [NO VERIFICABLE].
     """
-    return Path(__file__).parent.parent.resolve().parents[3]
+    # return Path(__file__).parent.parent.resolve().parents[3]
+    return Path(__file__).parent.parent.resolve()
 
 def load_data(path: str) -> pd.DataFrame:
     """

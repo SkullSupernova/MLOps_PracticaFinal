@@ -31,6 +31,8 @@ import torch
 import torchvision
 import IPython
 
+from logging_config import get_logger, setup_logging
+
 # ---------------------------------------------------------------------------
 # Resolución de la ruta raíz del proyecto para importaciones locales.
 # ---------------------------------------------------------------------------
@@ -83,7 +85,6 @@ OOD_TESTS = [
     ('Letra T',  'T'),
     ('Letra Z',  'Z'),
 ]
-
 
 # =============================================================================
 # Utilidades compartidas
@@ -183,6 +184,10 @@ def run_evaluate(args: argparse.Namespace) -> None:
         args (argparse.Namespace): Argumentos parseados por el subcomando
             'evaluate'. Campos requeridos: checkpoint, data_path, seed.
     """
+    # Al inicio de run_evaluate:
+    logger = get_logger(__name__)
+    logger.info("Iniciando evaluación. Checkpoint: %s", args.checkpoint)
+
     device, num_workers = setup_environment()
     g_cpu = set_seed(seed=args.seed)
 
@@ -204,22 +209,12 @@ def run_evaluate(args: argparse.Namespace) -> None:
     test_acc, test_f1 = evaluate_model(model, test_loader, device)
     diff = test_acc - BASELINE_ACC
 
-    print("\n" + "=" * 60)
-    print("EVALUACIÓN FINAL DEL EXPERIMENTO (TEST SET)")
-    print("=" * 60)
-    print(f"Referencia (línea base)  : {BASELINE_ACC:.4f}")
-    print(f"Modelo CNN_ResNet        : {test_acc:.4f}")
-    print(f"F1-Score (macro)         : {test_f1:.4f}")
-    print("-" * 40)
-    if diff > 0:
-        print(f"[+] Mejora observada: +{diff:.4f}")
-    elif diff < 0:
-        print(f"[-] Disminución de rendimiento: {diff:.4f}")
-        print("    Hipótesis: posible sobre-regularización o varianza "
-              "en el conjunto de prueba. [NO VERIFICABLE]")
-    else:
-        print(f"[=] Rendimiento idéntico: {diff:.4f}")
-    print("=" * 60)
+    # Tras evaluate_model:
+    logger.info(
+        "Evaluación completada. Accuracy: %.4f | F1 (macro): %.4f | "
+        "Diferencia respecto al baseline: %+.4f",
+        test_acc, test_f1, diff
+    )
 
     # --- Análisis cualitativo ---
     y_true, y_pred, _, images_test = get_predictions(
@@ -227,7 +222,6 @@ def run_evaluate(args: argparse.Namespace) -> None:
     )
     plot_confusion_matrix(y_true, y_pred, CLASS_NAMES)
 
-    print("\n=== Galería de errores de clasificación ===")
     plot_error_gallery(
         images_test, y_true, y_pred, CLASS_NAMES, num_images=10
     )
@@ -391,6 +385,10 @@ def main() -> None:
     Función principal: analiza los argumentos de la línea de comandos y
     despacha la ejecución al modo correspondiente.
     """
+
+    setup_logging()   # única llamada en todo el proyecto
+    logger = get_logger(__name__)
+
     parser = _build_parser()
     args = parser.parse_args()
 
@@ -401,6 +399,8 @@ def main() -> None:
     if args.mode is None:
         parser.print_help()
         sys.exit(1)
+
+    logger.info("Modo de ejecución seleccionado: %s", args.mode)
 
     dispatch = {
         'train':    run_train,
@@ -413,8 +413,13 @@ def main() -> None:
         parser.print_help()
         sys.exit(1)
 
-    handler(args)
-
+    try:
+        handler(args)
+    except Exception as exc:
+        logger.critical(
+            "Fallo irrecuperable en el modo '%s': %s",
+            args.mode, exc, exc_info=True
+        )
 
 if __name__ == '__main__':
     main()

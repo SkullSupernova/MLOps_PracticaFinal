@@ -22,6 +22,11 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
+from logging_config import get_logger
+
+
+logger = get_logger(__name__)
+
 # ---------------------------------------------------------------------------
 # Resolución de la ruta raíz del proyecto para importaciones locales.
 # Se asume que train.py se encuentra en el directorio raíz del proyecto y que
@@ -158,6 +163,8 @@ def run_training(
     device, num_workers = setup_environment()
     g_cpu = set_seed(seed=seed)
 
+    logger.info("Configurando entorno. Semilla: %d", seed)
+
     # ------------------------------------------------------------------
     # 2. Carga y validación del dataset (sin transformaciones de aug.)
     # ------------------------------------------------------------------
@@ -170,12 +177,15 @@ def run_training(
     # ------------------------------------------------------------------
     try:
         mean_val, std_val = calculate_dataset_statistics(ds_train_raw)
-        print(f"\nEstadísticas calculadas -> Media: {mean_val:.4f} | "
-              f"Desv. típica: {std_val:.4f}")
+        logger.info("Estadísticas calculadas. Media: %.4f | Desv. típica: %.4f",
+            mean_val, std_val)
     except Exception as e:
         mean_val, std_val = MEAN_FALLBACK, STD_FALLBACK
-        print(f"Advertencia: Cálculo de estadísticas fallido ({e}). "
-              f"Usando valores de respaldo: mean={mean_val}, std={std_val}.")
+        logger.warning(
+            "Cálculo de estadísticas fallido (%s). "
+            "Usando valores de respaldo: media=%.4f, std=%.4f",
+            e, mean_val, std_val
+        )
 
     # ------------------------------------------------------------------
     # 4. DataLoaders con separación estricta de transformaciones
@@ -192,10 +202,10 @@ def run_training(
         )
     )
 
-    print(f"\n=== Resumen del particionado ===")
-    print(f"Entrenamiento : {train_sz:,} muestras")
-    print(f"Validación    : {val_sz:,} muestras")
-    print(f"Test          : {test_sz:,} muestras")
+    logger.info(
+        "Particionado completado. Entrenamiento: %d | Validación: %d | Test: %d",
+        train_sz, val_sz, test_sz
+    )
 
     # ------------------------------------------------------------------
     # 5. Instanciación del modelo y objetos de optimización
@@ -204,11 +214,11 @@ def run_training(
     criterion, optimizer, scheduler = build_training_objects(model, lr=lr, l2=l2)
 
     n_params = sum(p.numel() for p in model.parameters())
-    print(f"\n=== Configuración del modelo ===")
-    print(f"Arquitectura : CNN_ResNet ({n_params:,} parámetros)")
-    print(f"Optimizador  : Adam (LR={lr}, L2={l2})")
-    print(f"Planificador : ReduceLROnPlateau (factor=0.1, paciencia=5)")
-    print(f"Épocas máx.  : {max_epochs}")
+    logger.info(f"\n=== Configuración del modelo ===")
+    logger.info(f"Arquitectura : CNN_ResNet ({n_params:,} parámetros)")
+    logger.info(f"Optimizador  : Adam (LR={lr}, L2={l2})")
+    logger.info(f"Planificador : ReduceLROnPlateau (factor=0.1, paciencia=5)")
+    logger.info(f"Épocas máx.  : {max_epochs}")
 
     # ------------------------------------------------------------------
     # 6. Gestión de checkpoint
@@ -218,17 +228,16 @@ def run_training(
     history = None
 
     if os.path.exists(save_path) and not force_train:
-        print(f"\nCheckpoint previo detectado: {save_path}")
+        logger.info("Checkpoint previo detectado: %s", save_path)
         success, _, metrics = load_checkpoint(save_path, model, device)
         if success:
             val_acc  = metrics.get('val_acc',  'N/A')
             val_loss = metrics.get('val_loss', 'N/A')
             if isinstance(val_acc, float):
-                print(f"Métricas recuperadas -> Val Acc: {val_acc:.4f} | "
-                      f"Val Loss: {val_loss:.4f}")
+                logger.info("Métricas recuperadas -> Val Acc: %.4f | Val Loss: %.4f", val_acc, val_loss)
             else:
-                print(f"Métricas recuperadas -> {metrics}")
-            print("Carga exitosa. Entrenamiento omitido.\n")
+                logger.info("Métricas recuperadas -> %s", metrics)
+            logger.info("Carga exitosa. Entrenamiento omitido.\n")
             return {
                 'model':        model,
                 'device':       device,
@@ -247,7 +256,7 @@ def run_training(
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
 
-    print("\nIniciando entrenamiento...")
+    logger.info("Iniciando entrenamiento. Épocas máx.: %d", max_epochs)
     history, model = train_model(
         model=model,
         train_loader=train_loader,
@@ -272,7 +281,7 @@ def run_training(
         },
         save_path,
     )
-    print(f"Modelo persistido en: {save_path}")
+    logger.info("Modelo persistido en: %s", save_path)
 
     return {
         'model':        model,
