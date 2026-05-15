@@ -1,225 +1,481 @@
 # KMNIST CNN_ResNet — Pipeline MLOps
 
-Clasificación de caracteres Kuzushiji (KMNIST) mediante una red neuronal convolucional
-residual (CNN_ResNet) con pipeline MLOps completo: entrenamiento reproducible, API REST
-de inferencia, Dockerización y CI/CD con GitHub Actions.
+## Identificación y accesos del proyecto
 
-## Arquitectura del proyecto
+* **Autor**: Miguel Angel Valbuena Bueno
+* **Repositorio en GitHub**: [https://github.com/SkullSupernova/MLOps_PracticaFinal](https://github.com/SkullSupernova/MLOps_PracticaFinal)
+* **Proyecto en Weights & Biases**: [https://wandb.ai/miguel-valbuena-bueno-/kmnist-resnet](https://wandb.ai/miguel-valbuena-bueno-/kmnist-resnet)
 
-    src/
-    ├── api.py            # API REST FastAPI
-    ├── logging_config.py # Logging centralizado
-    ├── main.py           # CLI principal
-    ├── model.py          # Arquitectura CNN_ResNet
-    ├── train.py          # Pipeline de entrenamiento
-    └── utils.py          # Utilidades de datos y visualización
+Pipeline completo de MLOps para clasificación de caracteres Kuzushiji mediante una red neuronal convolucional residual (`CNN_ResNet`) entrenada sobre el dataset KMNIST.
 
-## Requisitos
+---
 
-- Python 3.10 o superior
-- PyTorch 2.1.0 o superior
-- CUDA 11.8+ (opcional, para aceleración GPU)
+# Descripción del proyecto
 
-## Instalación
+El sistema implementa un modelo de clasificación de imágenes basado en arquitecturas residuales tipo ResNet para reconocer caracteres históricos japoneses del dataset KMNIST.
 
-    git clone https://github.com/<usuario>/kmnist-resnet.git
-    cd kmnist-resnet
-    python -m venv .venv
-    source .venv/bin/activate          # Linux/macOS
-    # .venv\Scripts\activate           # Windows
-    pip install -e ".[dev]"
+El proyecto integra:
 
-Copiar y rellenar las variables de entorno:
+* entrenamiento reproducible,
+* evaluación automatizada,
+* seguimiento de experimentos con Weights & Biases,
+* inferencia mediante FastAPI,
+* contenedorización con Docker,
+* validación mediante tests y linting,
+* automatización CI/CD.
 
-    cp .env.example .env
+---
 
-## Uso
+# Características principales
 
-### Verificar versiones del entorno
+* Arquitectura CNN residual optimizada para KMNIST
+* Entrenamiento reproducible con checkpoints
+* API REST mediante FastAPI
+* Integración con Weights & Biases (W&B)
+* Contenedorización con Docker
+* Validación automática mediante pytest
+* Linting y formateo con Ruff
+* Evaluación OOD (Out-of-Distribution)
+* CLI centralizada para operaciones del pipeline
 
-    python -m src.main --version
+---
 
-### Entrenamiento
+# Arquitectura del proyecto
 
-    # Respeta checkpoint previo si existe
-    python -m src.main train
+Versión reducida:
 
-    # Forzar reentrenamiento desde cero
-    python -m src.main train --force-train
+```text
+src/
+├── api.py            # Interfaz REST FastAPI
+├── logging_config.py # Configuración de registros
+├── main.py           # Orquestador CLI
+├── model.py          # Arquitectura CNN_ResNet
+├── train.py          # Pipeline de entrenamiento
+└── utils.py          # Utilidades de datos
+```
 
-    # Con integración W&B
-    python -m src.main train --use-wandb --max-epochs 100
+Versión extensa:
 
-### Evaluación sobre el test set
+```text
+MLOPS_PRACTICAFINAL/
+├───data
+│   └───KMNIST
+│       └───raw
+│               t10k-images-idx3-ubyte
+│               t10k-images-idx3-ubyte.gz
+│               t10k-labels-idx1-ubyte
+│               t10k-labels-idx1-ubyte.gz
+│               train-images-idx3-ubyte
+│               train-images-idx3-ubyte.gz
+│               train-labels-idx1-ubyte
+│               train-labels-idx1-ubyte.gz
+│
+├───logs
+│       errors.log
+│       kmnist.log
+│       project.log
+│
+├───models
+│       ResNet_Final_Combined.pth
+│
+├───notebook
+│       DL_Practica_final_25_26_MValbuena.ipynb
+│       DL_Practica_final_25_26_Refactor.ipynb
+│
+├───src
+│   │   api.py
+│   │   logging_config.py
+│   │   main.py
+│   │   model.py
+│   │   train.py
+│   │   utils.py
+│   │   __init__.py
+│
+├───test
+│   │   conftest.py
+│   │   test_api.py
+│   │   test_model.py
+│   │   test_utils.py
+│
+└───wandb
+```
 
-    python -m src.main evaluate --checkpoint models/ResNet_Final_Combined.pth
+---
 
-### Evaluación de robustez OOD
+# Requisitos previos
 
-    python -m src.main ood --checkpoint models/ResNet_Final_Combined.pth
+## Software requerido
 
-## API REST
+* Python 3.10 o superior
+* PyTorch 2.1.0 o superior
+* pip
+* Git
 
-### Ejecución local
+## Opcional
 
-    uvicorn src.api:app --host 0.0.0.0 --port 8000 --reload
+* CUDA 11.8+ para aceleración GPU
+* Docker y Docker Compose
 
-### Endpoints
+---
 
-| Método | Ruta         | Descripción                              |
-|--------|--------------|------------------------------------------|
-| GET    | /health      | Estado del servicio y del modelo         |
-| GET    | /model/info  | Metadatos del modelo cargado             |
-| POST   | /predict     | Inferencia sobre imagen PNG/JPEG         |
+# Instalación
 
-Documentación interactiva disponible en: http://localhost:8000/docs
+## 1. Clonar el repositorio
 
-### Ejemplo de inferencia
+```bash
+git clone https://github.com/SkullSupernova/MLOps_PracticaFinal.git
+cd MLOps_PracticaFinal
+```
 
-    curl -X POST http://localhost:8000/predict \
-         -F "file=@ruta/imagen.png"
+## 2. Crear entorno virtual
 
-## Docker
+### Linux/macOS
 
-### Construcción
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
 
-    docker build -t kmnist-api:latest .
+### Windows
 
-### Ejecución
+```powershell
+python -m venv .venv
+.venv\Scripts\activate
+```
 
-    docker run --rm -p 8000:8000 \
-      -e WANDB_API_KEY=<clave> \
-      -v $(pwd)/models:/app/models:ro \
-      kmnist-api:latest
+## 3. Instalar dependencias
 
-### Docker Compose
+```bash
+pip install -e ".[dev]"
+```
 
-    docker-compose up --build
+---
 
-## Tests
-
-    # Ejecutar todos los tests
-    pytest test/ -v
-
-    # Con informe de cobertura
-    pytest test/ --cov=src --cov-report=term-missing
-
-## Linting
-
-    ruff check src/ test/
-    ruff format src/ test/
-
-## Dataset
-
-KMNIST contiene 70.000 imágenes en escala de grises (28x28) de 10 caracteres
-Kuzushiji (escritura japonesa cursiva histórica).
-
-Los datos se esperan en: `data/KMNIST/raw/`
-
-Para descargar manualmente:
-
-    python -c "
-    import torchvision
-    torchvision.datasets.KMNIST(root='data', train=True,  download=True)
-    torchvision.datasets.KMNIST(root='data', train=False, download=True)
-    "
-
-## Clases
-
-| Índice | Hiragana | Romaji |
-|--------|----------|--------|
-| 0      | お       | o      |
-| 1      | き       | ki     |
-| 2      | す       | su     |
-| 3      | つ       | tsu    |
-| 4      | な       | na     |
-| 5      | は       | ha     |
-| 6      | ま       | ma     |
-| 7      | や       | ya     |
-| 8      | れ       | re     |
-| 9      | を       | wo     |
-
-## Resultados de referencia
-
-| Métrica      | Valor   |
-|--------------|---------|
-| Val Accuracy | 98.62 % |
-| Test F1 macro| ~0.986  |
+# Configuración del entorno
 
 ## Variables de entorno
 
-| Variable        | Descripción                          | Valor por defecto                       |
-|-----------------|--------------------------------------|-----------------------------------------|
-| MODEL_PATH      | Ruta al checkpoint .pth              | models/ResNet_Final_Combined.pth        |
-| DATASET_MEAN    | Media de normalización               | 0.1918                                  |
-| DATASET_STD     | Desviación estándar de normalización | 0.3483                                  |
-| WANDB_API_KEY   | Clave API de W&B                     | (obligatoria si se usa --use-wandb)     |
+Crear archivo `.env` a partir del ejemplo:
 
-# Comandos de ejecución y validación
+```bash
+cp .env.example .env
+```
 
-# Entorno local
+## Variables disponibles
 
-## 1. Instalar paquete en modo editable
-pip install -e ".[dev]"
+| Variable        | Descripción            | Valor por defecto                  |
+| --------------- | ---------------------- | ---------------------------------- |
+| `MODEL_PATH`    | Ruta del checkpoint    | `models/ResNet_Final_Combined.pth` |
+| `DATASET_MEAN`  | Media de normalización | `0.1918`                           |
+| `DATASET_STD`   | Desviación estándar    | `0.3483`                           |
+| `WANDB_API_KEY` | API key de W&B         | Requerida para tracking            |
 
-## 2. Verificar instalación
-python -c "from src.model import CNN_ResNet; print('OK')"
+---
 
-## 3. Verificar forward pass
+# Dataset
+
+El proyecto utiliza el dataset KMNIST, compuesto por:
+
+* 70.000 imágenes,
+* escala de grises,
+* resolución 28×28,
+* 10 clases de caracteres Kuzushiji.
+
+## Descarga manual
+
+```bash
+python -c "
+import torchvision
+torchvision.datasets.KMNIST(root='data', train=True, download=True)
+torchvision.datasets.KMNIST(root='data', train=False, download=True)
+"
+```
+
+Los datos se almacenan en:
+
+```text
+data/KMNIST/raw/
+```
+
+## Clases del dataset
+
+| Índice | Hiragana | Romaji |
+| ------ | -------- | ------ |
+| 0      | お        | o      |
+| 1      | き        | ki     |
+| 2      | す        | su     |
+| 3      | つ        | tsu    |
+| 4      | な        | na     |
+| 5      | は        | ha     |
+| 6      | ま        | ma     |
+| 7      | や        | ya     |
+| 8      | れ        | re     |
+| 9      | を        | wo     |
+
+---
+
+# Entrenamiento
+
+## Entrenamiento estándar
+
+```bash
+python -m src.main train
+```
+
+El sistema reutiliza automáticamente checkpoints existentes si están disponibles.
+
+## Reentrenamiento forzado
+
+```bash
+python -m src.main train --force-train
+```
+
+## Entrenamiento con W&B
+
+```bash
+python -m src.main train --use-wandb --max-epochs 100
+```
+
+---
+
+# Evaluación e inferencia
+
+## Evaluación sobre test set
+
+```bash
+python -m src.main evaluate \
+  --checkpoint models/ResNet_Final_Combined.pth
+```
+
+## Evaluación OOD
+
+```bash
+python -m src.main ood \
+  --checkpoint models/ResNet_Final_Combined.pth
+```
+
+## Verificación rápida del modelo
+
+```bash
 python -c "
 import torch
 from src.model import CNN_ResNet
-m = CNN_ResNet().eval()
+
+model = CNN_ResNet().eval()
 x = torch.randn(2, 1, 28, 28)
-out = m(x)
-print('Shape de salida:', out.shape)   # debe ser torch.Size([2, 10])
+out = model(x)
+
+print(out.shape)
 "
+```
 
-## 4. Ejecutar tests completos
-pytest test/ -v --cov=src
+Salida esperada:
 
-## 5. Linting
-ruff check src/ test/
+```text
+torch.Size([2, 10])
+```
 
-## 6. Entrenamiento (respeta checkpoint existente)
-python -m src.main train
+---
 
-## 7. Entrenamiento forzado
-python -m src.main train --force-train --max-epochs 100
+# API FastAPI
 
-## 8. Evaluación
-python -m src.main evaluate --checkpoint models/ResNet_Final_Combined.pth
+## Ejecución local
 
-## 9. OOD
-python -m src.main ood --checkpoint models/ResNet_Final_Combined.pth
-
-## 10. API local
+```bash
 uvicorn src.api:app --host 0.0.0.0 --port 8000 --reload
+```
 
-## 11. Probar endpoint health
+## Endpoints disponibles
+
+| Método | Ruta          | Descripción             |
+| ------ | ------------- | ----------------------- |
+| GET    | `/health`     | Estado del servicio     |
+| GET    | `/model/info` | Información del modelo  |
+| POST   | `/predict`    | Inferencia sobre imagen |
+
+## Documentación interactiva
+
+Disponible en:
+
+```text
+http://localhost:8000/docs
+```
+
+## Ejemplo de inferencia
+
+```bash
+curl -X POST http://localhost:8000/predict \
+  -F "file=@imagen.png"
+```
+
+## Verificación de estado
+
+```bash
 curl http://localhost:8000/health
+```
 
-## 12. Inferencia de ejemplo (requiere imagen PNG en el directorio actual)
-curl -X POST http://localhost:8000/predict -F "file=@imagen_ejemplo.png"
-
-## 13. Información del modelo
-curl http://localhost:8000/model/info
+---
 
 # Docker
 
-## Construcción de la imagen
+## Construcción de imagen
+
+```bash
 docker build -t kmnist-api:latest .
+```
 
 ## Ejecución del contenedor
-docker run --rm -p 8000:8000 \
-  -v "$(pwd)/models:/app/models:ro" \
+
+```bash
+docker run --rm \
+  -p 8000:8000 \
+  -v $(pwd)/models:/app/models:ro \
   kmnist-api:latest
+```
 
-## Verificación del health check del contenedor
-docker inspect kmnist_inference | grep -A5 '"Health"'
+## Docker Compose
 
-## Ejecución con docker-compose
-docker-compose up --build -d
+```bash
+docker-compose up --build
+```
 
 ## Ver logs
+
+```bash
 docker-compose logs -f api
+```
+
+---
+
+# Tests y calidad de código
+
+## Tests unitarios
+
+```bash
+pytest test/ -v
+```
+
+## Cobertura
+
+```bash
+pytest test/ --cov=src --cov-report=term-missing
+```
+
+## Linting
+
+```bash
+ruff check src/ test/
+```
+
+## Formateo
+
+```bash
+ruff format src/ test/
+```
+
+---
+
+# Weights & Biases (W&B)
+
+## Configuración
+
+Exportar la API key:
+
+```bash
+export WANDB_API_KEY=<tu_api_key>
+```
+
+## Ejecución con tracking
+
+```bash
+python -m src.main train --use-wandb
+```
+
+## Proyecto W&B
+
+[Weights & Biases Project](https://wandb.ai/miguel-valbuena-bueno-/kmnist-resnet?utm_source=chatgpt.com)
+
+---
+
+## Integración y despliegue continuos (ci/cd)
+
+El proyecto utiliza **GitHub Actions** para automatizar la validación del código mediante el flujo definido en `.github/workflows/ci.yml`. Cada envío de código (**push**) activa los siguientes procesos:
+
+1. **Linting (ruff)**: garantiza la calidad y el cumplimiento de los estándares de estilo del código.
+2. **Tests (pytest)**: ejecución de la suite de pruebas unitarias y de integración para validar la lógica del sistema.
+3. **Validación de forward pass del modelo**: prueba funcional que confirma la integridad de la arquitectura **CNN_ResNet**.
+
+---
+
+# Resultados de referencia
+
+| Métrica             | Valor   |
+| ------------------- | ------- |
+| Validation Accuracy | 98.62 % |
+| Test F1 Macro       | ~0.986  |
+
+
+---
+
+# Validación rápida del sistema
+
+## Verificar instalación
+
+```bash
+python -c "from src.model import CNN_ResNet; print('OK')"
+```
+
+## Ejecutar pipeline completo
+
+```bash
+python -m src.main train
+python -m src.main evaluate
+```
+
+## Validar API
+
+```bash
+curl http://localhost:8000/health
+```
+
+---
+
+# Troubleshooting
+
+## Error: checkpoint no encontrado
+
+Verificar existencia de:
+
+```text
+models/ResNet_Final_Combined.pth
+```
+
+---
+
+## Error CUDA
+
+Comprobar compatibilidad entre:
+
+* PyTorch,
+* CUDA,
+* drivers NVIDIA.
+
+---
+
+## Error W&B authentication
+
+Verificar:
+
+```bash
+echo $WANDB_API_KEY
+```
+
+---
+
+## Error Docker mount
+
+Verificar permisos sobre:
+
+```text
+models/
+```
