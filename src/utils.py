@@ -49,6 +49,11 @@ import PIL.ImageDraw as ImageDraw
 import PIL.ImageFont as ImageFont
 import matplotlib.font_manager as fm
 
+
+import torch
+import torchvision
+from torch.utils.data import DataLoader, Subset
+
 def get_project_root() -> Path:
     """
     Obtiene la ruta absoluta del directorio raíz del proyecto mediante la resolución relativa
@@ -370,7 +375,6 @@ def get_transforms(mean_val: float, std_val: float, is_train: bool = True) -> tr
     
     return transforms.Compose(transform_list)
 
-
 def prepare_dataloaders(ruta_base: str, mean_val: float, std_val: float, 
                         batch_size_train: int, batch_size_eval: int, 
                         num_workers: int, generator: torch.Generator) -> tuple:
@@ -412,15 +416,21 @@ def prepare_dataloaders(ruta_base: str, mean_val: float, std_val: float,
         root=ruta_base, train=False, download=False, transform=transform_eval
     )
 
-    train_size = int(0.8 * len(full_train_dataset_aug))
-    val_size = len(full_train_dataset_aug) - train_size
+    total_size = len(full_train_dataset_aug)
+    train_size = int(0.8 * total_size)
+    val_size = total_size - train_size
 
-    train_dataset, _ = random_split(
-        full_train_dataset_aug, [train_size, val_size], generator=generator
-    )
-    _, val_dataset = random_split(
-        full_train_dataset_eval, [train_size, val_size], generator=generator
-    )
+    # Obtención de índices globales
+    indices = list(range(total_size))
+
+    # División determinista de índices sin consumir el generador múltiples veces
+    rng = torch.randperm(len(indices), generator=generator).tolist()
+    train_indices = rng[:train_size]
+    val_indices = rng[train_size:]
+
+    # Asignación estricta de índices mediante Subset
+    train_dataset = Subset(full_train_dataset_aug, train_indices)
+    val_dataset = Subset(full_train_dataset_eval, val_indices)
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size_train, shuffle=True, 
                               num_workers=num_workers, generator=generator)
@@ -428,7 +438,7 @@ def prepare_dataloaders(ruta_base: str, mean_val: float, std_val: float,
                             num_workers=num_workers, generator=generator)
     test_loader = DataLoader(test_dataset, batch_size=batch_size_eval, shuffle=False, 
                              num_workers=num_workers, generator=generator)
-
+    
     return train_loader, val_loader, test_loader, train_size, val_size, len(test_dataset)
 
 def plot_normalized_batch(images_batch: torch.Tensor, labels_batch: torch.Tensor) -> None:
