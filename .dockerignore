@@ -1,0 +1,41 @@
+# Control de versiones
+.git/
+.gitignore
+
+# Entornos virtuales
+venv/
+.venv/
+env/
+
+# Secretos
+.env
+*.env
+
+# Datos (se montan como volumen o se accede vía almacenamiento externo)
+data/
+
+# Notebooks
+notebook/
+
+# Tests
+test/
+
+# Logs
+logs/
+
+# Caché de Python
+__pycache__/
+*.pyc
+*.pyo
+src/__pycache__/
+
+# W&B
+wandb/
+
+# IDE
+.vscode/
+.idea/
+
+# Documentación
+*.md
+docs/
