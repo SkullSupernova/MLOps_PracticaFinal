@@ -1,46 +1,62 @@
 # Entornos virtuales
+
 .venv/
 venv/
 env/
 
 # Caché de Python
-**/__pycache__/
-*.py[cod]
-*$py.class
 
-# Datos y modelos (evitar archivos pesados en el repositorio)
-#data/
+**pycache**/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+*$py.class
+.Python
+
+# Datos y modelos
+
+data/
+src/data/
 models/*.pth
 models/*.onnx
 models/*.h5
 
-# Herramientas de monitoreo y logs
-wandb/
-.pytest_cache/
-logs/
-
-# Archivos de configuración del IDE
-# .vscode/
-.idea/
-
-
 # Logs
+
+logs/
 logs/*.log
 logs/*.log.*
 
-# Datos y modelos locales
-data/
-src/data/
-
-# Artefactos de Python
-__pycache__/
-*.pyc
-*.pyo
-.pytest_cache/
-
 # W&B
-wandb/
 
-# Entornos virtuales
-.venv/
-venv/
+wandb/
+wandb/run-*
+wandb/offline-run-*
+
+# Pytest y cobertura
+
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Jupyter
+
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# IDE
+
+.vscode/
+.idea/
+
+# Secretos
+
+.env
+*.env
+
+# Distribución
+
+dist/
+build/
+*.egg-info/
