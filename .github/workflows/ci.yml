@@ -1,0 +1,83 @@
+name: CI — Lint y Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Linting (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Instalar dependencias de linting
+        run: pip install ruff
+
+      - name: Ejecutar ruff
+        run: ruff check src/ test/
+
+  test:
+    name: Tests (pytest)
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Instalar dependencias
+        run: |
+          pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Ejecutar tests con cobertura
+        run: pytest test/ --cov=src --cov-report=xml --cov-report=term-missing -v
+
+      - name: Subir informe de cobertura
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: false
+
+  validate-model:
+    name: Validación de forward pass del modelo
+    runs-on: ubuntu-latest
+    needs: lint
+    env:
+      WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Instalar dependencias
+        run: pip install -e ".[dev]"
+
+      - name: Validar arquitectura CNN_ResNet
+        run: |
+          python -c "
+          import torch
+          from src.model import CNN_ResNet
+          model = CNN_ResNet()
+          x = torch.randn(2, 1, 28, 28)
+          out = model(x)
+          assert out.shape == (2, 10), f'Shape inesperado: {out.shape}'
+          print('Validación de forward pass: OK — shape:', out.shape)
+          "
