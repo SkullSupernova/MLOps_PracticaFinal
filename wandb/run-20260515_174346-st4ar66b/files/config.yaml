@@ -1,0 +1,74 @@
+_wandb:
+    value:
+        cli_version: 0.27.0
+        e:
+            lns233zzo9xneq5gw13t8wuvz6ks6z50:
+                args:
+                    - train
+                    - --force-train
+                    - --max-epochs
+                    - "2"
+                    - --use-wandb
+                cpu_count: 24
+                cpu_count_logical: 32
+                cudaVersion: "13.2"
+                disk:
+                    /:
+                        total: "1000203087872"
+                        used: "365922263040"
+                email: miguel.valbuena.bueno@alumnos.upm.es
+                executable: D:\ProyectosPython\MLOps_PracticaFinal\.venv\Scripts\python.exe
+                git:
+                    commit: ef31d341656920ee5f282783c08c8ae1da98a82e
+                    remote: https://github.com/SkullSupernova/MLOps_PracticaFinal.git
+                gpu: NVIDIA GeForce RTX 4060
+                gpu_count: 1
+                gpu_nvidia:
+                    - architecture: Ada
+                      cudaCores: 3072
+                      memoryTotal: "8585740288"
+                      name: NVIDIA GeForce RTX 4060
+                      uuid: GPU-1c3e69f2-dff8-0928-7a09-5825babb042f
+                host: WHITE-PC-MASTER
+                memory:
+                    total: "68498305024"
+                os: Windows-11-10.0.26200-SP0
+                program: -m src.main
+                python: CPython 3.12.10
+                root: D:\ProyectosPython\MLOps_PracticaFinal
+                startedAt: "2026-05-15T15:43:46.055596Z"
+                writerId: lns233zzo9xneq5gw13t8wuvz6ks6z50
+        m: []
+        python_version: 3.12.10
+        t:
+            "1":
+                - 1
+                - 5
+                - 41
+                - 53
+            "2":
+                - 1
+                - 5
+                - 41
+                - 53
+            "3":
+                - 2
+                - 16
+            "4": 3.12.10
+            "5": 0.27.0
+            "8":
+                - 3
+            "12": 0.27.0
+            "13": windows-amd64
+batch_eval:
+    value: 64
+batch_train:
+    value: 8
+l2:
+    value: 0.0001
+lr:
+    value: 0.001
+max_epochs:
+    value: 2
+seed:
+    value: 42

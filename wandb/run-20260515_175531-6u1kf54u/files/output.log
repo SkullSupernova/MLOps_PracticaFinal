@@ -1,0 +1,24 @@
+2026-05-15 17:55:34 | INFO     | kmnist.src.utils | Verificando directorio: D:\ProyectosPython\MLOps_PracticaFinal\data\KMNIST\raw
+2026-05-15 17:55:34 | INFO     | kmnist.src.utils | KMNIST cargado. Partición: train | Muestras: 60000 | Rango de valores: [0.0000, 1.0000]
+2026-05-15 17:55:36 | INFO     | kmnist.src.utils | DataLoaders construidos — Train: 48000 | Val: 12000 | Test: 10000
+2026-05-15 17:55:36 | INFO     | kmnist.src.train | CNN_ResNet instanciada. Parámetros: 174970
+2026-05-15 17:55:36 | INFO     | kmnist.src.utils | Entrenamiento iniciado en: cuda
+2026-05-15 17:56:08 | INFO     | kmnist.src.utils | Época 001/50 | LR: 1.00e-03 | Loss: 0.3955 | Val Loss: 0.0907 | Val Acc: 0.9738 | F1: 0.9738 [*]
+2026-05-15 17:56:41 | INFO     | kmnist.src.utils | Época 002/50 | LR: 1.00e-03 | Loss: 0.1478 | Val Loss: 0.0701 | Val Acc: 0.9786 | F1: 0.9786 [*]
+2026-05-15 17:57:17 | INFO     | kmnist.src.utils | Época 003/50 | LR: 1.00e-03 | Loss: 0.1128 | Val Loss: 0.0541 | Val Acc: 0.9846 | F1: 0.9845 [*]
+2026-05-15 17:57:52 | INFO     | kmnist.src.utils | Época 004/50 | LR: 1.00e-03 | Loss: 0.0980 | Val Loss: 0.0539 | Val Acc: 0.9839 | F1: 0.9839 [*]
+2026-05-15 17:58:21 | INFO     | kmnist.src.utils | Época 005/50 | LR: 1.00e-03 | Loss: 0.0902 | Val Loss: 0.0560 | Val Acc: 0.9828 | F1: 0.9827
+2026-05-15 17:59:41 | INFO     | kmnist.src.utils | Época 006/50 | LR: 1.00e-03 | Loss: 0.0831 | Val Loss: 0.0438 | Val Acc: 0.9878 | F1: 0.9877 [*]
+2026-05-15 18:01:01 | INFO     | kmnist.src.utils | Época 007/50 | LR: 1.00e-03 | Loss: 0.0788 | Val Loss: 0.0388 | Val Acc: 0.9876 | F1: 0.9875 [*]
+2026-05-15 18:02:21 | INFO     | kmnist.src.utils | Época 008/50 | LR: 1.00e-03 | Loss: 0.0773 | Val Loss: 0.0436 | Val Acc: 0.9869 | F1: 0.9869
+2026-05-15 18:03:40 | INFO     | kmnist.src.utils | Época 009/50 | LR: 1.00e-03 | Loss: 0.0724 | Val Loss: 0.0577 | Val Acc: 0.9813 | F1: 0.9813
+2026-05-15 18:04:57 | INFO     | kmnist.src.utils | Época 010/50 | LR: 1.00e-03 | Loss: 0.0709 | Val Loss: 0.0309 | Val Acc: 0.9912 | F1: 0.9911 [*]
+2026-05-15 18:06:16 | INFO     | kmnist.src.utils | Época 011/50 | LR: 1.00e-03 | Loss: 0.0692 | Val Loss: 0.0353 | Val Acc: 0.9898 | F1: 0.9898
+2026-05-15 18:07:36 | INFO     | kmnist.src.utils | Época 012/50 | LR: 1.00e-03 | Loss: 0.0662 | Val Loss: 0.0362 | Val Acc: 0.9892 | F1: 0.9892
+2026-05-15 18:08:53 | INFO     | kmnist.src.utils | Época 013/50 | LR: 1.00e-03 | Loss: 0.0667 | Val Loss: 0.0317 | Val Acc: 0.9904 | F1: 0.9904
+2026-05-15 18:10:12 | INFO     | kmnist.src.utils | Época 014/50 | LR: 1.00e-03 | Loss: 0.0667 | Val Loss: 0.0331 | Val Acc: 0.9897 | F1: 0.9897
+2026-05-15 18:11:30 | INFO     | kmnist.src.utils | Época 015/50 | LR: 1.00e-03 | Loss: 0.0641 | Val Loss: 0.0381 | Val Acc: 0.9883 | F1: 0.9883
+2026-05-15 18:11:30 | INFO     | kmnist.src.utils | Early Stopping activado en época 15.
+2026-05-15 18:11:30 | INFO     | kmnist.src.utils | Entrenamiento finalizado en 954.12 s.
+2026-05-15 18:11:30 | INFO     | kmnist.src.utils | Pesos restaurados al mínimo de pérdida de validación.
+2026-05-15 18:11:30 | INFO     | kmnist.src.train | Modelo persistido en: D:\ProyectosPython\MLOps_PracticaFinal\models\ResNet_Final_Combined.pth

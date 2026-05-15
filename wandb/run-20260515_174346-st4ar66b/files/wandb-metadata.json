@@ -1,0 +1,45 @@
+{
+  "os": "Windows-11-10.0.26200-SP0",
+  "python": "CPython 3.12.10",
+  "startedAt": "2026-05-15T15:43:46.055596Z",
+  "args": [
+    "train",
+    "--force-train",
+    "--max-epochs",
+    "2",
+    "--use-wandb"
+  ],
+  "program": "-m src.main",
+  "git": {
+    "remote": "https://github.com/SkullSupernova/MLOps_PracticaFinal.git",
+    "commit": "ef31d341656920ee5f282783c08c8ae1da98a82e"
+  },
+  "email": "miguel.valbuena.bueno@alumnos.upm.es",
+  "root": "D:\\ProyectosPython\\MLOps_PracticaFinal",
+  "host": "WHITE-PC-MASTER",
+  "executable": "D:\\ProyectosPython\\MLOps_PracticaFinal\\.venv\\Scripts\\python.exe",
+  "cpu_count": 24,
+  "cpu_count_logical": 32,
+  "gpu": "NVIDIA GeForce RTX 4060",
+  "gpu_count": 1,
+  "disk": {
+    "/": {
+      "total": "1000203087872",
+      "used": "365922263040"
+    }
+  },
+  "memory": {
+    "total": "68498305024"
+  },
+  "gpu_nvidia": [
+    {
+      "name": "NVIDIA GeForce RTX 4060",
+      "memoryTotal": "8585740288",
+      "cudaCores": 3072,
+      "architecture": "Ada",
+      "uuid": "GPU-1c3e69f2-dff8-0928-7a09-5825babb042f"
+    }
+  ],
+  "cudaVersion": "13.2",
+  "writerId": "lns233zzo9xneq5gw13t8wuvz6ks6z50"
+}

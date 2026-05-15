@@ -1,0 +1,10 @@
+2026-05-15 17:43:49 | INFO     | kmnist.src.utils | Verificando directorio: D:\ProyectosPython\MLOps_PracticaFinal\data\KMNIST\raw
+2026-05-15 17:43:49 | INFO     | kmnist.src.utils | KMNIST cargado. Partición: train | Muestras: 60000 | Rango de valores: [0.0000, 1.0000]
+2026-05-15 17:43:51 | INFO     | kmnist.src.utils | DataLoaders construidos — Train: 48000 | Val: 12000 | Test: 10000
+2026-05-15 17:43:51 | INFO     | kmnist.src.train | CNN_ResNet instanciada. Parámetros: 174970
+2026-05-15 17:43:51 | INFO     | kmnist.src.utils | Entrenamiento iniciado en: cuda
+2026-05-15 17:44:48 | INFO     | kmnist.src.utils | Época 001/2 | LR: 1.00e-03 | Loss: 0.3955 | Val Loss: 0.0907 | Val Acc: 0.9738 | F1: 0.9738 [*]
+2026-05-15 17:46:06 | INFO     | kmnist.src.utils | Época 002/2 | LR: 1.00e-03 | Loss: 0.1478 | Val Loss: 0.0701 | Val Acc: 0.9786 | F1: 0.9786 [*]
+2026-05-15 17:46:06 | INFO     | kmnist.src.utils | Entrenamiento finalizado en 134.91 s.
+2026-05-15 17:46:06 | INFO     | kmnist.src.utils | Pesos restaurados al mínimo de pérdida de validación.
+2026-05-15 17:46:06 | INFO     | kmnist.src.train | Modelo persistido en: D:\ProyectosPython\MLOps_PracticaFinal\models\ResNet_Final_Combined.pth
