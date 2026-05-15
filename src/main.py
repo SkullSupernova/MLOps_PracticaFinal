@@ -41,7 +41,6 @@ if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
 from utils import (
-    CNN_ResNet,
     calculate_dataset_statistics,
     cargar_y_validar_kmnist,
     create_image_from_text,
@@ -55,6 +54,10 @@ from utils import (
     set_seed,
     setup_environment,
     visualize_ood_confidence,
+)
+
+from model import (
+    CNN_ResNet
 )
 
 from train import (

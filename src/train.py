@@ -37,7 +37,6 @@ if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
 from utils import (
-    CNN_ResNet,
     calculate_dataset_statistics,
     cargar_y_validar_kmnist,
     load_checkpoint,
@@ -45,6 +44,10 @@ from utils import (
     set_seed,
     setup_environment,
     train_model,
+)
+
+from model import (
+    CNN_ResNet
 )
 
 # =============================================================================
