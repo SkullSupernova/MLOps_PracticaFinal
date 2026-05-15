@@ -5,13 +5,13 @@
 
 import argparse
 import os
+from pathlib import Path
 
 import torch
 import torch.nn as nn
 import torch.optim as optim
 
 import wandb
-
 from src.logging_config import get_logger
 from src.model import CNN_ResNet
 from src.utils import (
@@ -29,7 +29,6 @@ logger = get_logger(__name__)
 # =============================================================================
 # Constantes de configuración por defecto
 # =============================================================================
-from pathlib import Path
 
 _PROJECT_ROOT        = Path(__file__).parent.parent.resolve()
 DEFAULT_DATA_PATH    = str(_PROJECT_ROOT / 'data')
@@ -52,7 +51,6 @@ def build_training_objects(model: nn.Module, lr: float, l2: float) -> tuple:
         optimizer, mode='min', factor=0.1, patience=5,
     )
     return criterion, optimizer, scheduler
-
 
 def run_training(
     data_path:       str   = DEFAULT_DATA_PATH,
@@ -163,19 +161,57 @@ def _build_parser() -> argparse.ArgumentParser:
         description='Entrenamiento KMNIST — CNN_ResNet',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    p.add_argument('--data-path',        type=str,   default=DEFAULT_DATA_PATH,    dest='data_path')
-    p.add_argument('--models-dir',       type=str,   default=DEFAULT_MODELS_DIR,   dest='models_dir')
-    p.add_argument('--checkpoint-name',  type=str,   default=DEFAULT_CHECKPOINT_NAME, dest='checkpoint_name')
-    p.add_argument('--max-epochs',       type=int,   default=DEFAULT_MAX_EPOCHS,   dest='max_epochs')
-    p.add_argument('--lr',               type=float, default=DEFAULT_LR)
-    p.add_argument('--l2',               type=float, default=DEFAULT_L2)
-    p.add_argument('--batch-train',      type=int,   default=DEFAULT_BATCH_TRAIN,  dest='batch_train')
-    p.add_argument('--batch-eval',       type=int,   default=DEFAULT_BATCH_EVAL,   dest='batch_eval')
-    p.add_argument('--force-train',      action='store_true',                      dest='force_train')
-    p.add_argument('--seed',             type=int,   default=DEFAULT_SEED)
-    p.add_argument('--use-wandb',        action='store_true',                      dest='use_wandb')
+    p.add_argument(
+        '--data-path',
+        type=str,
+        default=DEFAULT_DATA_PATH,
+        dest='data_path')
+    p.add_argument(
+        '--models-dir',
+        type=str,
+        default=DEFAULT_MODELS_DIR,
+        dest='models_dir')
+    p.add_argument(
+        '--checkpoint-name',
+        type=str,
+        default=DEFAULT_CHECKPOINT_NAME,
+        dest='checkpoint_name')
+    p.add_argument(
+        '--max-epochs',
+        type=int,
+        default=DEFAULT_MAX_EPOCHS,
+        dest='max_epochs')
+    p.add_argument(
+        '--lr',
+        type=float,
+        default=DEFAULT_LR)
+    p.add_argument(
+        '--l2',
+        type=float,
+        default=DEFAULT_L2)
+    p.add_argument(
+        '--batch-train',
+        type=int,
+        default=DEFAULT_BATCH_TRAIN,
+        dest='batch_train')
+    p.add_argument(
+        '--batch-eval',
+        type=int,
+        default=DEFAULT_BATCH_EVAL,
+        dest='batch_eval')
+    p.add_argument(
+        '--force-train',
+        action='store_true',
+        dest='force_train')
+    p.add_argument(
+        '--seed',
+        type=int,
+        default=DEFAULT_SEED)
+    p.add_argument(
+        '--use-wandb',
+        action='store_true',
+        dest='use_wandb')
     return p
-
 
 if __name__ == '__main__':
     args = _build_parser().parse_args()

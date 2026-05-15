@@ -3,7 +3,7 @@
 # =============================================================================
 
 import torch
-import pytest
+
 from src.model import CNN_ResNet, ResidualBlock
 
 

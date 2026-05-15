@@ -13,7 +13,6 @@
 
 import io
 import os
-import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Optional

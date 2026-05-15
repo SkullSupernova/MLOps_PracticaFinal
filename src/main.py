@@ -15,6 +15,20 @@ import torchvision
 
 from src.logging_config import get_logger, setup_logging
 from src.model import CNN_ResNet
+from src.train import (
+    DEFAULT_BATCH_EVAL,
+    DEFAULT_BATCH_TRAIN,
+    DEFAULT_CHECKPOINT_NAME,
+    DEFAULT_DATA_PATH,
+    DEFAULT_L2,
+    DEFAULT_LR,
+    DEFAULT_MAX_EPOCHS,
+    DEFAULT_MODELS_DIR,
+    DEFAULT_SEED,
+    MEAN_FALLBACK,
+    STD_FALLBACK,
+    run_training,
+)
 from src.utils import (
     calculate_dataset_statistics,
     cargar_y_validar_kmnist,
@@ -29,12 +43,6 @@ from src.utils import (
     set_seed,
     setup_environment,
     visualize_ood_confidence,
-)
-from src.train import (
-    DEFAULT_BATCH_EVAL, DEFAULT_BATCH_TRAIN, DEFAULT_CHECKPOINT_NAME,
-    DEFAULT_DATA_PATH, DEFAULT_L2, DEFAULT_LR, DEFAULT_MAX_EPOCHS,
-    DEFAULT_MODELS_DIR, DEFAULT_SEED, MEAN_FALLBACK, STD_FALLBACK,
-    run_training,
 )
 
 CLASS_NAMES  = ['o', 'ki', 'su', 'tsu', 'na', 'ha', 'ma', 'ya', 're', 'wo']
@@ -147,18 +155,59 @@ def _build_parser() -> argparse.ArgumentParser:
 
     sub = parser.add_subparsers(dest='mode')
 
-    p_train = sub.add_parser('train', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    p_train.add_argument('--data-path',       type=str,   default=DEFAULT_DATA_PATH,       dest='data_path')
-    p_train.add_argument('--models-dir',      type=str,   default=DEFAULT_MODELS_DIR,      dest='models_dir')
-    p_train.add_argument('--checkpoint-name', type=str,   default=DEFAULT_CHECKPOINT_NAME, dest='checkpoint_name')
-    p_train.add_argument('--max-epochs',      type=int,   default=DEFAULT_MAX_EPOCHS,      dest='max_epochs')
-    p_train.add_argument('--lr',              type=float, default=DEFAULT_LR)
-    p_train.add_argument('--l2',              type=float, default=DEFAULT_L2)
-    p_train.add_argument('--batch-train',     type=int,   default=DEFAULT_BATCH_TRAIN,     dest='batch_train')
-    p_train.add_argument('--batch-eval',      type=int,   default=DEFAULT_BATCH_EVAL,      dest='batch_eval')
-    p_train.add_argument('--force-train',     action='store_true',                         dest='force_train')
-    p_train.add_argument('--seed',            type=int,   default=DEFAULT_SEED)
-    p_train.add_argument('--use-wandb',       action='store_true',                         dest='use_wandb')
+    p_train = sub.add_parser(
+        'train',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    p_train.add_argument(
+        '--data-path',
+        type=str,
+        default=DEFAULT_DATA_PATH,
+        dest='data_path')
+    p_train.add_argument(
+        '--models-dir',
+        type=str,
+        default=DEFAULT_MODELS_DIR,
+        dest='models_dir')
+    p_train.add_argument(
+        '--checkpoint-name',
+        type=str,
+        default=DEFAULT_CHECKPOINT_NAME,
+        dest='checkpoint_name')
+    p_train.add_argument(
+        '--max-epochs',
+        type=int,
+        default=DEFAULT_MAX_EPOCHS,
+        dest='max_epochs')
+    p_train.add_argument(
+        '--lr',
+        type=float,
+        default=DEFAULT_LR)
+    p_train.add_argument(
+        '--l2',
+        type=float,
+        default=DEFAULT_L2)
+    p_train.add_argument(
+        '--batch-train',
+        type=int,
+        default=DEFAULT_BATCH_TRAIN,
+        dest='batch_train')
+    p_train.add_argument(
+        '--batch-eval',
+        type=int,
+        default=DEFAULT_BATCH_EVAL,
+        dest='batch_eval')
+    p_train.add_argument(
+        '--force-train',
+        action='store_true',
+        dest='force_train')
+    p_train.add_argument(
+        '--seed',
+        type=int,
+        default=DEFAULT_SEED)
+    p_train.add_argument(
+        '--use-wandb',
+        action='store_true',
+        dest='use_wandb')
 
     for name in ('evaluate', 'ood'):
         p = sub.add_parser(name, formatter_class=argparse.ArgumentDefaultsHelpFormatter)

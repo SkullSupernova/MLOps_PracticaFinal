@@ -3,7 +3,6 @@
 # =============================================================================
 
 import io
-from unittest.mock import AsyncMock, MagicMock, patch
 
 import numpy as np
 import pytest
@@ -11,7 +10,7 @@ import torch
 from fastapi.testclient import TestClient
 from PIL import Image
 
-from src.api import CLASS_NAMES, app, _state
+from src.api import CLASS_NAMES, _state, app
 from src.model import CNN_ResNet
 
 

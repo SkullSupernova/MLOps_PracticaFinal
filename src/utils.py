@@ -11,16 +11,14 @@ import copy
 import os
 import random
 import time
-from collections import Counter
 from pathlib import Path
-from typing import Optional
 
+import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
 import numpy as np
+import PIL.Image as Image
 import PIL.ImageDraw as ImageDraw
 import PIL.ImageFont as ImageFont
-import PIL.Image as Image
-import matplotlib.font_manager as fm
 import seaborn as sns
 import torch
 import torch.nn as nn
@@ -33,7 +31,7 @@ from sklearn.metrics import (
     confusion_matrix,
     f1_score,
 )
-from torch.utils.data import DataLoader, Subset, random_split
+from torch.utils.data import DataLoader, Subset
 
 from src.logging_config import get_logger
 
@@ -472,7 +470,7 @@ def load_checkpoint(
         # Autorización de la variable global restringida por PyTorch 2.6+
         import numpy as np
         torch.serialization.add_safe_globals([np._core.multiarray.scalar])
-        
+
         ckpt = torch.load(save_path, map_location=device, weights_only=True)
         model.load_state_dict(ckpt['model_state_dict'])
         metrics = ckpt.get('metrics', {})

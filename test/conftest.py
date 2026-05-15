@@ -2,8 +2,6 @@
 # conftest.py — Fixtures compartidas para toda la suite de tests.
 # =============================================================================
 
-from pathlib import Path
-from unittest.mock import MagicMock
 
 import pytest
 import torch
