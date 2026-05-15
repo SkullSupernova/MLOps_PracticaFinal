@@ -8,10 +8,15 @@
 FROM python:3.11-slim AS builder
 
 WORKDIR /build
-
 COPY pyproject.toml requirements.txt ./
+
+# Generación de entorno virtual aislado
+RUN python -m venv /opt/venv
+# Exposición del entorno virtual en el PATH
+ENV PATH="/opt/venv/bin:$PATH"
+
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir --prefix=/install -r requirements.txt
+    pip install --no-cache-dir -r requirements.txt
 
 # --- Etapa 2: runtime ---
 FROM python:3.11-slim AS runtime
@@ -19,19 +24,22 @@ FROM python:3.11-slim AS runtime
 LABEL maintainer="kmnist-project"
 LABEL description="API de inferencia KMNIST CNN_ResNet"
 
-# Usuario sin privilegios (seguridad)
+# Creación de usuario sin privilegios por seguridad
 RUN useradd --create-home --shell /bin/bash appuser
 WORKDIR /app
 
-# Copiar dependencias instaladas desde builder
-COPY --from=builder /install /usr/local
+# Transferencia del entorno virtual completo desde la etapa constructora
+COPY --from=builder /opt/venv /opt/venv
 
-# Copiar código fuente
+# Exposición del entorno virtual en el PATH del contenedor final
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Copia de código fuente y configuraciones
 COPY src/     ./src/
 COPY models/  ./models/
 COPY config/  ./config/
 
-# Crear directorio de logs con permisos adecuados
+# Ajuste de permisos para escritura de registros
 RUN mkdir -p logs && chown -R appuser:appuser /app
 
 USER appuser
@@ -39,7 +47,7 @@ USER appuser
 # Puerto de exposición
 EXPOSE 8000
 
-# Variables de entorno por defecto (sobreescribibles en docker run)
+# Variables de entorno por defecto
 ENV MODEL_PATH=/app/models/ResNet_Final_Combined.pth \
     DATASET_MEAN=0.1918 \
     DATASET_STD=0.3483 \
@@ -50,4 +58,6 @@ ENV MODEL_PATH=/app/models/ResNet_Final_Combined.pth \
 HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
-CMD ["uvicorn", "src.api:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+# Ejecución del servicio mediante el ejecutable del entorno virtual
+# Ejecución absoluta garantizada sin depender del PATH dinámico
+CMD ["/opt/venv/bin/python", "-m", "uvicorn", "src.api:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
