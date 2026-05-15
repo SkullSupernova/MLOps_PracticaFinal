@@ -24,9 +24,6 @@ import torch.optim as optim
 
 from logging_config import get_logger
 
-
-logger = get_logger(__name__)
-
 # ---------------------------------------------------------------------------
 # Resolución de la ruta raíz del proyecto para importaciones locales.
 # Se asume que train.py se encuentra en el directorio raíz del proyecto y que
@@ -50,11 +47,12 @@ from model import (
     CNN_ResNet
 )
 
+logger = get_logger(__name__)
+
 # =============================================================================
 # Constantes de configuración por defecto
 # =============================================================================
-BASE_DIR    = os.path.abspath(os.path.dirname(__file__))          # .../src
-PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..'))      # .../MLOps_PracticaFinal
+PROJECT_ROOT = os.getenv('PROJECT_ROOT', os.path.abspath(os.path.join(BASE_DIR, '..')))
 
 DEFAULT_DATA_PATH       = os.path.join(PROJECT_ROOT, 'data')
 DEFAULT_MODELS_DIR      = os.path.join(PROJECT_ROOT, 'models')
