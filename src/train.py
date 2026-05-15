@@ -10,6 +10,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
+import wandb
+
 from src.logging_config import get_logger
 from src.model import CNN_ResNet
 from src.utils import (
@@ -73,7 +75,6 @@ def run_training(
     # W&B (opcional)
     run = None
     if use_wandb:
-        import wandb
         run = wandb.init(
             project="kmnist-resnet",
             config=dict(
@@ -130,16 +131,16 @@ def run_training(
         {
             'model_state_dict': model.state_dict(),
             'metrics': {
-                'val_acc':  history['val_acc'][-1],
-                'val_loss': history['val_loss'][-1],
+                'val_acc':  float(history['val_acc'][-1]),
+                'val_loss': float(history['val_loss'][-1]),
             },
         },
         save_path,
     )
+
     logger.info("Modelo persistido en: %s", save_path)
 
     if run is not None:
-        import wandb
         run.log({
             'val_acc':  history['val_acc'][-1],
             'val_loss': history['val_loss'][-1],

@@ -341,10 +341,9 @@ class ModelCheckpoint:
 
 def calculate_metrics(y_true, y_pred) -> dict:
     return {
-        'accuracy': accuracy_score(y_true, y_pred),
-        'f1_macro': f1_score(y_true, y_pred, average='macro'),
+        'accuracy': float(accuracy_score(y_true, y_pred)),
+        'f1_macro': float(f1_score(y_true, y_pred, average='macro')),
     }
-
 
 def train_model(
     model: nn.Module,
@@ -435,6 +434,29 @@ def train_model(
 
     return history, model
 
+# def load_checkpoint(
+#     save_path: str,
+#     model: nn.Module,
+#     device: torch.device,
+# ) -> tuple:
+#     """
+#     Carga el estado del modelo desde un archivo .pth.
+
+#     Usa weights_only=True para evitar la deserialización de objetos Python
+#     arbitrarios (mitigación de pickle injection).
+
+#     Retorna:
+#         tuple: (success: bool, state_dict: dict | None, metrics: dict)
+#     """
+#     try:
+#         ckpt = torch.load(save_path, map_location=device, weights_only=True)
+#         model.load_state_dict(ckpt['model_state_dict'])
+#         metrics = ckpt.get('metrics', {})
+#         logger.info("Checkpoint cargado desde: %s | Métricas: %s", save_path, metrics)
+#         return True, ckpt['model_state_dict'], metrics
+#     except Exception as exc:
+#         logger.error("Error al cargar checkpoint '%s': %s", save_path, exc)
+#         return False, None, {}
 
 def load_checkpoint(
     save_path: str,
@@ -444,13 +466,13 @@ def load_checkpoint(
     """
     Carga el estado del modelo desde un archivo .pth.
 
-    Usa weights_only=True para evitar la deserialización de objetos Python
-    arbitrarios (mitigación de pickle injection).
-
-    Retorna:
-        tuple: (success: bool, state_dict: dict | None, metrics: dict)
+    Usa weights_only=True junto con autorización explícita de NumPy scalar.
     """
     try:
+        # Autorización de la variable global restringida por PyTorch 2.6+
+        import numpy as np
+        torch.serialization.add_safe_globals([np._core.multiarray.scalar])
+        
         ckpt = torch.load(save_path, map_location=device, weights_only=True)
         model.load_state_dict(ckpt['model_state_dict'])
         metrics = ckpt.get('metrics', {})
@@ -459,7 +481,6 @@ def load_checkpoint(
     except Exception as exc:
         logger.error("Error al cargar checkpoint '%s': %s", save_path, exc)
         return False, None, {}
-
 
 def evaluate_model(
     model: nn.Module,
