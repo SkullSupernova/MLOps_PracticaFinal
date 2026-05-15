@@ -1,15 +1,12 @@
 # =========================================================
 # 1. Librerías estándar de Python
 # =========================================================
-import sys
 import os
 import time
 import random
-import shutil
 import copy
 from collections import Counter
 from pathlib import Path
-from typing import Optional
 
 # =========================================================
 # 2. Manipulación de datos y matemáticas
@@ -23,7 +20,6 @@ import yaml
 # =========================================================
 import torch
 import torch.nn as nn
-import torch.optim as optim
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, random_split
 
@@ -33,18 +29,15 @@ import torchvision.transforms as transforms
 # =========================================================
 # 4. Machine Learning clásico y métricas
 # =========================================================
-import sklearn
 from sklearn.metrics import (
     f1_score,
     accuracy_score,
-    classification_report,
     confusion_matrix
 )
 
 # =========================================================
 # 5. Visualización
 # =========================================================
-import matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -52,17 +45,9 @@ import seaborn as sns
 # 6. Procesamiento de imágenes y tipografía
 # =========================================================
 import PIL.Image as Image
-import PIL.ImageOps as ImageOps
 import PIL.ImageDraw as ImageDraw
 import PIL.ImageFont as ImageFont
 import matplotlib.font_manager as fm
-
-# =========================================================
-# 7. Entorno interactivo / notebooks
-# =========================================================
-import IPython
-from IPython.display import display, Markdown
-
 
 def get_project_root() -> Path:
     """
@@ -446,7 +431,6 @@ def prepare_dataloaders(ruta_base: str, mean_val: float, std_val: float,
 
     return train_loader, val_loader, test_loader, train_size, val_size, len(test_dataset)
 
-
 def plot_normalized_batch(images_batch: torch.Tensor, labels_batch: torch.Tensor) -> None:
     """
     Despliega visualmente un lote de imágenes previamente sometido al pipeline de transformación y normalización.
@@ -504,7 +488,6 @@ class EarlyStopping:
         else:
             self.best_loss = val_loss
             self.counter = 0
-
 
 class ModelCheckpoint:
     """
