@@ -57,7 +57,7 @@ src/
 Versión extensa:
 
 ```text
-MLOPS_PRACTICAFINAL/
+MLOps_PracticaFinal/
 ├───data
 │   └───KMNIST
 │       └───raw
