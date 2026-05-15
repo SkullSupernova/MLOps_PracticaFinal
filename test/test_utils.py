@@ -91,8 +91,9 @@ class TestEarlyStopping:
 
     def test_triggers_after_patience(self):
         es = EarlyStopping(patience=3)
-        for _ in range(3):
-            es(1.0)   # sin mejora
+        # Se requieren 4 evaluaciones: 1 basal + 3 sin mejora paramétrica
+        for _ in range(4):
+            es(1.0)
         assert es.early_stop
 
     def test_resets_counter_on_improvement(self):
